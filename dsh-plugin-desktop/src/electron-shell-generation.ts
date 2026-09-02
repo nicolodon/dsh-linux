@@ -92,8 +92,8 @@ function requestBelongsToRenderer(
   webContentsId: number,
 ): boolean {
   const providedIds = [details.webContentsId, details.webContents?.id]
-    .filter((value): value is number => value !== undefined && value !== -1)
-  return providedIds.length === 0 || providedIds.every(value => value === webContentsId)
+    .filter((value): value is number => value !== undefined)
+  return providedIds.length > 0 && providedIds.every(value => value === webContentsId)
 }
 
 function requestComesFromRendererOrigin(
@@ -102,15 +102,9 @@ function requestComesFromRendererOrigin(
 ): boolean {
   if (details.resourceType === 'mainFrame') return true
   const frame = details.frame
-  if (frame === undefined || frame === null || frame.detached) return true
-  const frameOrigin = frame.origin
-  if (frameOrigin === '' || frameOrigin === 'null' || frameOrigin === 'about:blank' || frameOrigin === origin) {
-    const top = frame.top ?? (frame.parent === null ? frame : undefined)
-    if (top === undefined || top.detached) return true
-    const topOrigin = top.origin
-    return topOrigin === '' || topOrigin === 'null' || topOrigin === 'about:blank' || topOrigin === origin
-  }
-  return false
+  if (frame === undefined || frame === null || frame.detached || frame.origin !== origin) return false
+  const top = frame.top ?? (frame.parent === null ? frame : undefined)
+  return top !== undefined && !top.detached && top.origin === origin
 }
 
 /**
