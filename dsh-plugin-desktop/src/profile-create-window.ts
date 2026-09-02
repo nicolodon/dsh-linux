@@ -7,6 +7,7 @@ import {
   auxiliaryWindowHasCustomFrame,
 } from './auxiliary-window-options.ts'
 import { revealApplication } from './electron-reveal.ts'
+import { installContextMenu } from './context-menu.ts'
 import type { DesktopLocale } from './runtime.ts'
 import { desktopProfileCreateCopy } from './profile-create-copy.ts'
 
@@ -81,6 +82,7 @@ export class ProfileCreateWindow {
     this.window = window
     window.accessibleTitle = copy.title
     window.removeMenu()
+    installContextMenu(window, () => this.options.locale === 'zh' ? 'zh-CN' : 'en')
     window.webContents.setWindowOpenHandler(() => ({ action: 'deny' }))
     const navigate = (event: Electron.Event, href: string): void => {
       const action = parseProfileCreateAction(href)

@@ -7,6 +7,7 @@ import {
   auxiliaryWindowHasCustomFrame,
 } from './auxiliary-window-options.ts'
 import { revealApplication } from './electron-reveal.ts'
+import { installContextMenu } from './context-menu.ts'
 import type { DesktopLocale } from './runtime.ts'
 import {
   desktopSetupWizardSelectionIsAvailable,
@@ -179,6 +180,7 @@ export class DesktopSetupWizardWindow {
     this.window = window
     window.accessibleTitle = copy.title
     window.removeMenu()
+    installContextMenu(window, () => this.options.locale === 'zh' ? 'zh-CN' : 'en')
     window.webContents.setWindowOpenHandler(() => ({ action: 'deny' }))
     window.webContents.on('will-attach-webview', event => { event.preventDefault() })
 

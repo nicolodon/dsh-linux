@@ -12,6 +12,7 @@ import {
 import { showDesktopDialog, showDesktopMessageBox } from './desktop-dialog-window.ts'
 import type { DesktopLocale } from './runtime.ts'
 import { applicationNeedsReveal, revealApplication } from './electron-reveal.ts'
+import { installContextMenu } from './context-menu.ts'
 import { desktopRestartConfirmationCopy } from './tray-locale.ts'
 import {
   desktopRecoveryCopy,
@@ -267,6 +268,7 @@ export class DesktopStartupRecoveryWindow {
     this.window = window
     window.accessibleTitle = copy.title
     window.removeMenu()
+    installContextMenu(window, () => this.options.locale === 'zh' ? 'zh-CN' : 'en')
     window.webContents.setWindowOpenHandler(() => ({ action: 'deny' }))
     window.webContents.on('will-attach-webview', event => { event.preventDefault() })
     const navigate = (event: Electron.Event, href: string): void => {

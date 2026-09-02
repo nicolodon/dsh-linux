@@ -8,6 +8,7 @@ import {
   auxiliaryWindowHasCustomFrame,
 } from './auxiliary-window-options.ts'
 import { revealApplication } from './electron-reveal.ts'
+import { installContextMenu } from './context-menu.ts'
 
 const DIALOG_SCHEME = 'dsh-desktop-dialog:'
 const DIALOG_DOCUMENT = fileURLToPath(new URL('./native-ui/desktop-dialog.html', import.meta.url))
@@ -118,6 +119,7 @@ export class DesktopDialogWindow {
     })
     window.accessibleTitle = this.options.title
     window.removeMenu()
+    installContextMenu(window)
     window.webContents.setWindowOpenHandler(() => ({ action: 'deny' }))
     window.webContents.on('will-attach-webview', event => { event.preventDefault() })
 

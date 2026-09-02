@@ -37,7 +37,7 @@ interface NativeMenuLabels {
   readonly zoomOut: string
 }
 
-const LABELS: Readonly<Record<NativeMenuLocale, NativeMenuLabels>> = {
+export const LABELS: Readonly<Record<NativeMenuLocale, NativeMenuLabels>> = {
   en: {
     about: 'About',
     closeWindow: 'Close Window',

@@ -18,6 +18,8 @@ import type { DesktopNotification, DesktopShellSpec } from './runtime.ts'
 import { prepareTrayIcon } from './tray-icons.ts'
 import { desktopWindowOptions } from './window-options.ts'
 import type { DesktopRendererAccessHeader } from './desktop-browser-access.ts'
+import { installContextMenu } from './context-menu.ts'
+import { nativeMenuLocale } from './native-menu.ts'
 import {
   fitMainWindowBounds,
   sameMainWindowBounds,
@@ -90,8 +92,8 @@ function requestBelongsToRenderer(
   webContentsId: number,
 ): boolean {
   const providedIds = [details.webContentsId, details.webContents?.id]
-    .filter((value): value is number => value !== undefined)
-  return providedIds.length > 0 && providedIds.every(value => value === webContentsId)
+    .filter((value): value is number => value !== undefined && value !== -1)
+  return providedIds.length === 0 || providedIds.every(value => value === webContentsId)
 }
 
 function requestComesFromRendererOrigin(
@@ -100,9 +102,15 @@ function requestComesFromRendererOrigin(
 ): boolean {
   if (details.resourceType === 'mainFrame') return true
   const frame = details.frame
-  if (frame === undefined || frame === null || frame.detached || frame.origin !== origin) return false
-  const top = frame.top ?? (frame.parent === null ? frame : undefined)
-  return top !== undefined && !top.detached && top.origin === origin
+  if (frame === undefined || frame === null || frame.detached) return true
+  const frameOrigin = frame.origin
+  if (frameOrigin === '' || frameOrigin === 'null' || frameOrigin === 'about:blank' || frameOrigin === origin) {
+    const top = frame.top ?? (frame.parent === null ? frame : undefined)
+    if (top === undefined || top.detached) return true
+    const topOrigin = top.origin
+    return topOrigin === '' || topOrigin === 'null' || topOrigin === 'about:blank' || topOrigin === origin
+  }
+  return false
 }
 
 /**
@@ -147,14 +155,6 @@ function installRendererAccessHeader(
 
 function clampedZoomLevel(level: number): number {
   return Math.min(MAX_ZOOM_LEVEL, Math.max(MIN_ZOOM_LEVEL, level))
-}
-
-function isZoomShortcut(input: Electron.Input): 'in' | 'out' | 'reset' | undefined {
-  if (input.type !== 'keyDown' || input.alt || (!input.control && !input.meta)) return undefined
-  if (input.key === '+' || input.key === '=') return 'in'
-  if (input.key === '-' || input.key === '_') return 'out'
-  if (input.key === '0') return 'reset'
-  return undefined
 }
 
 export interface ElectronShellGenerationOptions {
@@ -323,16 +323,46 @@ export class ElectronShellGeneration {
       window.hide()
     }
     const preserveBlankTitle = (event: Electron.Event): void => { event.preventDefault() }
-    const handleZoomShortcut = (event: Electron.Event, input: Electron.Input): void => {
-      const action = isZoomShortcut(input)
-      if (action === undefined) return
-      event.preventDefault()
-      if (action === 'reset') {
-        window.webContents.setZoomLevel(0)
+    const handleWindowShortcuts = (event: Electron.Event, input: Electron.Input): void => {
+      if (input.type !== 'keyDown' || window.isDestroyed()) return
+      const isCtrlOrCmd = input.control || input.meta
+
+      if (isCtrlOrCmd && !input.alt) {
+        if (input.key === '+' || input.key === '=') {
+          event.preventDefault()
+          window.webContents.setZoomLevel(clampedZoomLevel(window.webContents.getZoomLevel() + 1))
+          return
+        }
+        if (input.key === '-' || input.key === '_') {
+          event.preventDefault()
+          window.webContents.setZoomLevel(clampedZoomLevel(window.webContents.getZoomLevel() - 1))
+          return
+        }
+        if (input.key === '0') {
+          event.preventDefault()
+          window.webContents.setZoomLevel(0)
+          return
+        }
+      }
+
+      if ((isCtrlOrCmd && input.key.toLowerCase() === 'r') || input.key === 'F5') {
+        event.preventDefault()
+        if (input.shift || (input.control && input.key === 'F5')) {
+          window.webContents.reloadIgnoringCache()
+        } else {
+          window.webContents.reload()
+        }
         return
       }
-      const step = action === 'in' ? 1 : -1
-      window.webContents.setZoomLevel(clampedZoomLevel(window.webContents.getZoomLevel() + step))
+
+      if ((isCtrlOrCmd && input.shift && input.key.toLowerCase() === 'i') || input.key === 'F12') {
+        event.preventDefault()
+        if (window.webContents.isDevToolsOpened()) {
+          window.webContents.closeDevTools()
+        } else {
+          window.webContents.openDevTools({ mode: 'detach' })
+        }
+      }
     }
     const navigate = (event: Electron.Event<Electron.WebContentsWillFrameNavigateEventParams>): void => {
       if (!event.isMainFrame) return
@@ -386,7 +416,7 @@ export class ElectronShellGeneration {
     window.on('move', scheduleWindowStateWrite)
     window.on('resize', scheduleWindowStateWrite)
     window.on('page-title-updated', preserveBlankTitle)
-    window.webContents.on('before-input-event', handleZoomShortcut)
+    window.webContents.on('before-input-event', handleWindowShortcuts)
     window.webContents.on('will-frame-navigate', navigate)
     window.webContents.on('will-redirect', redirect)
     window.webContents.on('render-process-gone', rendererGone)
@@ -405,6 +435,7 @@ export class ElectronShellGeneration {
       return { action: 'deny' }
     })
     window.once('ready-to-show', revealStartupSurface)
+    const removeContextMenu = installContextMenu(window, () => nativeMenuLocale([app.getLocale()]))
     let tray: Tray | undefined
     let removeRendererAccessHeader: (() => void) | undefined
     this.cleanupListeners = () => {
@@ -417,7 +448,8 @@ export class ElectronShellGeneration {
       window.off('page-title-updated', preserveBlankTitle)
       window.off('ready-to-show', revealStartupSurface)
       cleanupFullscreenTransition()
-      window.webContents.off('before-input-event', handleZoomShortcut)
+      removeContextMenu()
+      window.webContents.off('before-input-event', handleWindowShortcuts)
       window.webContents.off('will-frame-navigate', navigate)
       window.webContents.off('will-redirect', redirect)
       window.webContents.off('render-process-gone', rendererGone)
