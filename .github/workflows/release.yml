@@ -17,7 +17,7 @@ env:
   DSH_TELEMETRY_DISABLED: '1'
 
 jobs:
-  build-linux:
+  release-linux:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
@@ -35,27 +35,9 @@ jobs:
           path: ${{ steps.yarn-cache.outputs.dir }}
           key: yarn-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('yarn.lock', '.yarnrc.yml') }}
       - run: yarn install --immutable
-      - name: Build Linux AppImage and DEB artifacts
+      - name: Build Linux AppImage and DEB packages
         run: yarn dist:linux
-      - name: Upload Linux artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: linux-packages
-          path: |
-            dsh-plugin-desktop/dist/*.AppImage
-            dsh-plugin-desktop/dist/*.deb
-
-  publish-release:
-    needs: build-linux
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v6
-      - name: Download Linux artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: linux-packages
-          path: artifacts
-      - name: Create GitHub Release
+      - name: Publish GitHub Release
         uses: softprops/action-gh-release@v2
         if: startsWith(github.ref, 'refs/tags/')
         with:
@@ -63,4 +45,5 @@ jobs:
           prerelease: false
           generate_release_notes: true
           files: |
-            artifacts/*
+            dsh-plugin-desktop/dist/*.AppImage
+            dsh-plugin-desktop/dist/*.deb
