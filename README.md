@@ -13,7 +13,6 @@ Official Linux release of DSH Desktop for Ubuntu 24.04+, Debian, and universal L
 ### 📥 Installation Instructions
 
 #### Ubuntu / Debian (.deb)
-    ```bash
     wget https://github.com/<OWNER>/<REPO>/releases/download/v2.0.3/DSH-Desktop-2.0.3-amd64.deb
     sudo apt install ./DSH-Desktop-2.0.3-amd64.deb
 
