@@ -24,6 +24,11 @@ wget https://github.com/nicolodon/dsh-linux/releases/download/v2.0.3/DSH-Desktop
 chmod +x DSH-Desktop-2.0.3-x86_64.AppImage
 ./DSH-Desktop-2.0.3-x86_64.AppImage
 ```
+
+#### Canonical Snap Store
+```bash
+sudo snap install dsh-desktop
+```
 ---
 ### 🔐 SHA-256 Checksums
 
