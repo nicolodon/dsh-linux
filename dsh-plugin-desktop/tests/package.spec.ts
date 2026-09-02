@@ -691,6 +691,7 @@ describe('published package surface', () => {
     expect(manifest.build?.linux?.target).toEqual([
       { target: 'AppImage', arch: ['x64'] },
       { target: 'deb', arch: ['x64'] },
+      { target: 'snap', arch: ['x64'] },
     ])
   })
 
