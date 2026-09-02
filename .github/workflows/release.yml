@@ -35,7 +35,8 @@ jobs:
           path: ${{ steps.yarn-cache.outputs.dir }}
           key: yarn-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('yarn.lock', '.yarnrc.yml') }}
       - run: yarn install --immutable
-      - run: yarn dist:linux
+      - name: Build Linux AppImage and DEB artifacts
+        run: yarn dist:linux
       - name: Upload Linux artifacts
         uses: actions/upload-artifact@v4
         with:
@@ -44,41 +45,15 @@ jobs:
             dsh-plugin-desktop/dist/*.AppImage
             dsh-plugin-desktop/dist/*.deb
 
-  build-windows:
-    runs-on: windows-latest
-    steps:
-      - uses: actions/checkout@v6
-        with:
-          submodules: recursive
-      - uses: actions/setup-node@v6
-        with:
-          node-version: 22.23.2
-      - run: corepack enable
-      - name: Resolve Yarn cache folder
-        id: yarn-cache
-        run: echo "dir=$(yarn config get cacheFolder)" >> "$GITHUB_OUTPUT"
-      - uses: actions/cache@v6
-        with:
-          path: ${{ steps.yarn-cache.outputs.dir }}
-          key: yarn-${{ runner.os }}-${{ runner.arch }}-${{ hashFiles('yarn.lock', '.yarnrc.yml') }}
-      - run: yarn install --immutable
-      - run: yarn dist:win
-      - run: yarn dist:win-portable
-      - name: Upload Windows artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: windows-packages
-          path: |
-            dsh-plugin-desktop/dist/*.exe
-
   publish-release:
-    needs: [build-linux, build-windows]
+    needs: build-linux
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
-      - name: Download all built artifacts
+      - name: Download Linux artifacts
         uses: actions/download-artifact@v4
         with:
+          name: linux-packages
           path: artifacts
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
@@ -88,5 +63,4 @@ jobs:
           prerelease: false
           generate_release_notes: true
           files: |
-            artifacts/linux-packages/*
-            artifacts/windows-packages/*
+            artifacts/*
