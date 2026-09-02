@@ -39,13 +39,13 @@ GitHub Actions automatically:
 
 **Option A — Install `.deb`:**
 ```bash
-wget https://github.com/<YOUR_USER>/<REPO>/releases/latest/download/DSH-Desktop-2.0.3-amd64.deb
+wget https://github.com/nicolodon/dsh-linux/releases/latest/download/DSH-Desktop-2.0.3-amd64.deb
 sudo apt install ./DSH-Desktop-2.0.3-amd64.deb
 ```
 
 **Option B — Run `.AppImage` (Portable):**
 ```bash
-wget https://github.com/<YOUR_USER>/<REPO>/releases/latest/download/DSH-Desktop-2.0.3-x86_64.AppImage
+wget https://github.com/nicolodon/dsh-linux/releases/latest/download/DSH-Desktop-2.0.3-x86_64.AppImage
 chmod +x DSH-Desktop-2.0.3-x86_64.AppImage
 ./DSH-Desktop-2.0.3-x86_64.AppImage
 ```
@@ -73,14 +73,14 @@ In `Settings -> Secrets and variables -> Actions`:
 - `GPG_PASSPHRASE`: Passphrase for the key (if set)
 
 #### 3. User Setup & Installation
-Once deployed to GitHub Pages (`https://<username>.github.io/<repo>/`):
+Once deployed to GitHub Pages (`https://nicolodon.github.io/dsh-linux/`):
 
 ```bash
 # 1. Download & trust repository signing key
-curl -fsSL https://<username>.github.io/<repo>/gpg.key | sudo gpg --dearmor -o /etc/apt/keyrings/dsh-desktop.gpg
+curl -fsSL https://nicolodon.github.io/dsh-linux/gpg.key | sudo gpg --dearmor -o /etc/apt/keyrings/dsh-desktop.gpg
 
 # 2. Add APT repository source list
-echo "deb [signed-by=/etc/apt/keyrings/dsh-desktop.gpg] https://<username>.github.io/<repo>/ stable main" | sudo tee /etc/apt/sources.list.d/dsh-desktop.list
+echo "deb [signed-by=/etc/apt/keyrings/dsh-desktop.gpg] https://nicolodon.github.io/dsh-linux/ stable main" | sudo tee /etc/apt/sources.list.d/dsh-desktop.list
 
 # 3. Update and install
 sudo apt update

@@ -13,14 +13,17 @@ Official Linux release of DSH Desktop for Ubuntu 24.04+, Debian, and universal L
 ### 📥 Installation Instructions
 
 #### Ubuntu / Debian (.deb)
-    wget https://github.com/<OWNER>/<REPO>/releases/download/v2.0.3/DSH-Desktop-2.0.3-amd64.deb
-    sudo apt install ./DSH-Desktop-2.0.3-amd64.deb
+```bash
+wget https://github.com/nicolodon/dsh-linux/releases/download/v2.0.3/DSH-Desktop-2.0.3-amd64.deb
+sudo apt install ./DSH-Desktop-2.0.3-amd64.deb
+```
 
 #### Universal Linux (.AppImage)
-    
-    wget https://github.com/<OWNER>/<REPO>/releases/download/v2.0.3/DSH-Desktop-2.0.3-x86_64.AppImage
-    chmod +x DSH-Desktop-2.0.3-x86_64.AppImage
-    ./DSH-Desktop-2.0.3-x86_64.AppImage
+```bash
+wget https://github.com/nicolodon/dsh-linux/releases/download/v2.0.3/DSH-Desktop-2.0.3-x86_64.AppImage
+chmod +x DSH-Desktop-2.0.3-x86_64.AppImage
+./DSH-Desktop-2.0.3-x86_64.AppImage
+```
 ---
 ### 🔐 SHA-256 Checksums
 
