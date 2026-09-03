@@ -399,6 +399,7 @@
       "artifactName": "DSH-Desktop-${version}-${arch}-Setup.${ext}"
     },
     "linux": {
+      "executableName": "dsh-linux",
       "target": [
         {
           "target": "AppImage",
@@ -422,7 +423,7 @@
       "category": "Development",
       "maintainer": "Anywhere Labs <dev@dshdesktop.cn>",
       "icon": "build/icons",
-      "artifactName": "DSH-Desktop-${version}-${arch}.${ext}",
+      "artifactName": "dsh-linux-${version}-${arch}.${ext}",
       "desktop": {
         "entry": {
           "Name": "DSH Desktop",
@@ -444,10 +445,10 @@
         "libgbm1",
         "libasound2t64 | libasound2"
       ],
-      "artifactName": "DSH-Desktop-${version}-${arch}.${ext}"
+      "artifactName": "dsh-linux_${version}_${arch}.${ext}"
     },
     "appImage": {
-      "artifactName": "DSH-Desktop-${version}-${arch}.${ext}"
+      "artifactName": "dsh-linux-${version}-${arch}.${ext}"
     }
   }
 }

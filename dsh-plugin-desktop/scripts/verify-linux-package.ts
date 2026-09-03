@@ -120,13 +120,13 @@ export function verifyLinuxPackage(
   const distDir = join(options.desktopRoot, 'dist')
   const appImagePath = join(
     distDir,
-    `DSH-Desktop-${options.version}-x86_64.AppImage`,
+    `dsh-linux-${options.version}-x86_64.AppImage`,
   )
   const debPath = join(
     distDir,
-    `DSH-Desktop-${options.version}-amd64.deb`,
+    `dsh-linux_${options.version}_amd64.deb`,
   )
-  const applicationPath = join(distDir, 'linux-unpacked', 'dsh-plugin-desktop')
+  const applicationPath = join(distDir, 'linux-unpacked', 'dsh-linux')
 
   assertElfBinary(appImagePath, 'Linux AppImage')
   assertDebArchive(debPath, 'Linux DEB package')

@@ -14,25 +14,27 @@ Official Linux release of DSH Desktop for Ubuntu 24.04+, Debian, and universal L
 
 #### Ubuntu / Debian (.deb)
 ```bash
-wget https://github.com/nicolodon/dsh-linux/releases/download/v2.0.3/DSH-Desktop-2.0.3-amd64.deb
-sudo apt install ./DSH-Desktop-2.0.3-amd64.deb
+wget https://github.com/nicolodon/dsh-linux/releases/download/v2.0.3/dsh-linux_2.0.3_amd64.deb
+sudo apt install ./dsh-linux_2.0.3_amd64.deb
 ```
 
 #### Universal Linux (.AppImage)
 ```bash
-wget https://github.com/nicolodon/dsh-linux/releases/download/v2.0.3/DSH-Desktop-2.0.3-x86_64.AppImage
-chmod +x DSH-Desktop-2.0.3-x86_64.AppImage
-./DSH-Desktop-2.0.3-x86_64.AppImage
+wget https://github.com/nicolodon/dsh-linux/releases/download/v2.0.3/dsh-linux-2.0.3-x86_64.AppImage
+chmod +x dsh-linux-2.0.3-x86_64.AppImage
+./dsh-linux-2.0.3-x86_64.AppImage
 ```
 
 #### Canonical Snap Store
 ```bash
-sudo snap install dsh-desktop
+sudo snap install dsh-linux
 ```
 ---
 ### 🔐 SHA-256 Checksums
 
-    • DSH-Desktop-2.0.3-amd64.deb:
-    5aa8ed8c919c60252c97b47fa072e4a1197ccaceea671d59a26761b266bc4b23
-    • DSH-Desktop-2.0.3-x86_64.AppImage:
-    38c0573c65ac8d81dae4d4eab23163802931d82ea211112b811f04a2abc77567
+    • dsh-linux_2.0.3_amd64.deb:
+    3730aa5cab448fe9e030ed43b717d9414b5420164bdb878f9276298921abd5c9
+    • dsh-linux-2.0.3-x86_64.AppImage:
+    a2810644b73760e6af1ee76d2320b787ad8baf2e74cbe8f2387b72e68a54578c
+    • dsh-linux_2.0.3_amd64.snap:
+    2a01b9e23526e3d550eeeab7506414cd3424a50d77294c0af3bc8e0672f70102

@@ -59,9 +59,9 @@ describe('Linux package artifact verification', () => {
     const unpackedDir = join(distDir, 'linux-unpacked')
     mkdirSync(unpackedDir, { recursive: true })
 
-    const appImagePath = join(distDir, 'DSH-Desktop-2.0.3-x86_64.AppImage')
-    const debPath = join(distDir, 'DSH-Desktop-2.0.3-amd64.deb')
-    const appPath = join(unpackedDir, 'dsh-plugin-desktop')
+    const appImagePath = join(distDir, 'dsh-linux-2.0.3-x86_64.AppImage')
+    const debPath = join(distDir, 'dsh-linux_2.0.3_amd64.deb')
+    const appPath = join(unpackedDir, 'dsh-linux')
 
     writeFileSync(appImagePath, VALID_ELF, { mode: 0o755 })
     writeFileSync(debPath, VALID_DEB_HEADER, { mode: 0o644 })
@@ -86,7 +86,7 @@ describe('Linux package artifact verification', () => {
     const tempRoot = mkdtempSync(join(tmpdir(), 'dsh-linux-verify-test-'))
     const distDir = join(tempRoot, 'dist')
     mkdirSync(distDir, { recursive: true })
-    const appImagePath = join(distDir, 'DSH-Desktop-2.0.3-x86_64.AppImage')
+    const appImagePath = join(distDir, 'dsh-linux-2.0.3-x86_64.AppImage')
     writeFileSync(appImagePath, VALID_ELF, { mode: 0o644 }) // not executable
 
     try {
